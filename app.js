@@ -13,7 +13,8 @@
 
 const streetQueryList = document.querySelector('.streets')
 const search = document.querySelector('.search')
-const table = document.querySelector('.table')
+let table = document.querySelector('.table')
+const title = document.querySelector('#street-name')
 
 const streets = async (streetsUrl) => {
   const request = await fetch(streetsUrl);
@@ -21,36 +22,29 @@ const streets = async (streetsUrl) => {
   streetListRender(data.streets)
 }
 
-const stopLocations = async (streetKey) => {
-  //const streetKey = streetNum[0].key
-  console.log(streetKey)
+const stopLocations = async (streetKey, streetName) => {
+  title.innerHTML = '';
+  title.insertAdjacentHTML('afterbegin', `
+  Displaying results for ${streetName}
+  `)
   const stopLocations = await fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=yXm1l1BHCfXG4tZHyorJ&street=${streetKey}`);
   const individualStopLocations = await stopLocations.json();
   console.log(individualStopLocations)
-  //stopListRender(individualStopLocations)
-  //loop over indivdualStopData, get stop keys and render?
   return stopSchedules(individualStopLocations)
 }
 
 const stopSchedules = async (individualStopSchedules) => {
-  //const stopNum = stopKey.stops[0].key;
-  //console.log(`stop number ${stopNum}`)
   console.log(typeof individualStopSchedules)
   console.log(individualStopSchedules)
   let stopNum = []
   individualStopSchedules.stops.forEach(ele => {
-    
     stopNum.push(ele.key)
-    
   })
-  //console.log(stopNum)
   stopListRender(stopNum)
-
 }
 
 const streetListRender = (streets) => {
-  console.log(streets)
-  console.log(typeof streets)
+  
   streets.forEach(street => {
     streetQueryList.insertAdjacentHTML('afterbegin', `
     <a href="#" class='list' data-street-key="${street.key}">${street.name}</a>
@@ -60,8 +54,7 @@ const streetListRender = (streets) => {
   const atags = document.querySelectorAll('.list')
   atags.forEach(ele => {
     ele.addEventListener('click', (e) => {
-      console.log(e.target.dataset.streetKey)
-      stopLocations(e.target.dataset.streetKey)
+      stopLocations(e.target.dataset.streetKey, e.target.innerHTML)
     })
   })
 }
@@ -69,14 +62,11 @@ const streetListRender = (streets) => {
 const stopListRender = (stopLocations) => {
   console.log(stopLocations)
   console.log(typeof stopLocations)
+  table.innerHTML = ''
   stopLocations.forEach(async stopNum => {
     
     const stopScheduleRequest = await fetch(`https://api.winnipegtransit.com/v3/stops/${stopNum}/schedule.json?api-key=yXm1l1BHCfXG4tZHyorJ`)
     const stopScheduleData = await stopScheduleRequest.json()
-    console.log(stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][0]['times']['arrival']['estimated'])
-    
-   
-
 
     table.insertAdjacentHTML('afterbegin', `
     <tr>
@@ -103,7 +93,3 @@ search.addEventListener('keydown', (e) => {
   e.preventDefault()
 }
 })
-
-// const stopScheduleRequest = await fetch(`https://api.winnipegtransit.com/v3/stops/${stopNum}/schedule.json?api-key=yXm1l1BHCfXG4tZHyorJ`)
-//     const stopScheduleData = await stopScheduleRequest.json()
-
