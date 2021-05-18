@@ -85,6 +85,8 @@ const stopListRender = (stopLocations) => {
             <td>${stopScheduleData['stop-schedule']['stop']['direction']}</td>
             <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['route']['number']}</td>
             <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][0]['times']['arrival']['estimated']}</td>
+            <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][1]['times']['arrival']['estimated']}</td>
+
           </tr>
     `)
   })
