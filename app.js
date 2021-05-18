@@ -25,16 +25,18 @@ const streets = async (streetsUrl) => {
   streetListRender(data.streets)
 }
 
-const stopLocations = async (streetNum) => {
-  const streetKey = streetNum[0].key
+const stopLocations = async (streetKey) => {
+  //const streetKey = streetNum[0].key
+  console.log(streetKey)
   const stopLocations = await fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=yXm1l1BHCfXG4tZHyorJ&street=${streetKey}`);
   const individualStopData = await stopLocations.json();
-  //console.log(individualStopData)
+  console.log(individualStopData)
+  stopListRender(individualStopData)
   return individualStopData;
 }
 
 const stopSchedules = async (stopKey) => {
-  const stopNum = stopKey.stops[0].key;
+  //const stopNum = stopKey.stops[0].key;
   //console.log(`stop number ${stopNum}`)
   const stopScheduleRequest = await fetch(`https://api.winnipegtransit.com/v3/stops/${stopNum}/schedule.json?api-key=yXm1l1BHCfXG4tZHyorJ`)
   const stopScheduleData = await stopScheduleRequest.json()
@@ -48,16 +50,22 @@ const streetListRender = (streets) => {
   console.log(streets)
   streets.forEach(street => {
     streetQueryList.insertAdjacentHTML('afterbegin', `
-    <a href="#" data-street-key="${street.key}">${street.name}</a>
+    <a href="#" class='list' data-street-key="${street.key}">${street.name}</a>
     `)
+    
   });
+  const atags = document.querySelectorAll('.list')
+  atags.forEach(ele => {
+    ele.addEventListener('click', (e) => {
+      console.log(e.target.dataset.streetKey)
+      stopLocations(e.target.dataset.streetKey)
+    })
+  })
+}
 
+const stopListRender = (stopLocations) => {
 
 }
-// streets(streetsUrl)
-// .then(stopLocations)
-// .then(stopSchedules)
-
 
 search.addEventListener('keydown', (e) => {
   //console.log(e.target)
@@ -76,3 +84,11 @@ search.addEventListener('keydown', (e) => {
 // e.preventDefault()
 
 //event.target.nodeName === 'INPUT'
+
+// <tr>
+//             <td>Kenaston Boulevard</td>
+//             <td>Rothwell Road</td>
+//             <td>Northbound</td>
+//             <td>74</td>
+//             <td>02:25 PM</td>
+//           </tr>
