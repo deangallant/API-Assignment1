@@ -10,18 +10,35 @@
 // 3.  Stop Schedule endpoint
 // a. from 2A I can get the Stops "key" to find the next 2 bus arrival times by querying the STOP SCHEDULE endpoint.
 
-const mychoice = 'water';
+const mychoice = 'ferry road';
 const streetsUrl = `https://api.winnipegtransit.com/v3/streets.json?api-key=yXm1l1BHCfXG4tZHyorJ&name=${mychoice}`;
 
 
-const requestStreetData = async (streetsUrl) => {
- 
+const streets = async (streetsUrl) => {
   const request = await fetch(streetsUrl);
   const data = await request.json();
   return data.streets;
 }
 
-requestStreetData(streetsUrl)
-.then((data) => {
-  console.log(data)
-})
+const stopLocations = async (streetNum) => {
+  const streetKey = streetNum[0].key
+  const stopLocations = await fetch(`https://api.winnipegtransit.com/v3/stops.json?api-key=yXm1l1BHCfXG4tZHyorJ&street=${streetKey}`);
+  const individualStopData = await stopLocations.json();
+  console.log(individualStopData)
+  return individualStopData;
+}
+
+const stopSchedules = async (stopKey) => {
+  const stopNum = stopKey.stops[0].key;
+  console.log(`stop number ${stopNum}`)
+  const stopScheduleRequest = await fetch(`https://api.winnipegtransit.com/v3/stops/${stopNum}/schedule.json?api-key=yXm1l1BHCfXG4tZHyorJ`)
+  const stopScheduleData = await stopScheduleRequest.json()
+  const nextBus = stopScheduleData
+  
+  console.log(nextBus)
+  
+}
+
+streets(streetsUrl)
+.then(stopLocations)
+.then(stopSchedules)
