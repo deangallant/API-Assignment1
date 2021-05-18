@@ -44,7 +44,7 @@ const stopSchedules = async (individualStopSchedules) => {
 }
 
 const streetListRender = (streets) => {
-  
+  streetQueryList.innerHTML = ''
   streets.forEach(street => {
     streetQueryList.insertAdjacentHTML('afterbegin', `
     <a href="#" class='list' data-street-key="${street.key}">${street.name}</a>
