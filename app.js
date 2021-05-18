@@ -12,6 +12,7 @@
 
 const mychoice = 'ferry road';
 const streetsUrl = `https://api.winnipegtransit.com/v3/streets.json?api-key=yXm1l1BHCfXG4tZHyorJ&name=${mychoice}`;
+const search = document.querySelector('.search')
 
 
 const streets = async (streetsUrl) => {
@@ -43,4 +44,19 @@ streets(streetsUrl)
 .then(stopLocations)
 .then(stopSchedules)
 
+
+search.addEventListener('keydown', (e) => {
+  //console.log(e.target)
+  if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+    if (e.target.value !== '') {
+    console.log(e.target.value)
+    e.target.value = ''
+}
+}
+})
+
 //<a href="#" data-street-key="4499">Kenaston Common Drive</a>
+// e.target.value = ''
+// e.preventDefault()
+
+//event.target.nodeName === 'INPUT'
