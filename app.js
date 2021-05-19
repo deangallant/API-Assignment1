@@ -1,16 +1,4 @@
 
-// 1. Streets endpoint
-// a.  query a street name
-// b.  get key # from response - this key represents the street name
-
-// 2. Stops endpoint
-// a.  use street key obtained in 1B and use that to query Stops endpoint to find all
-// stops along respective street.
-
-// 3.  Stop Schedule endpoint
-// a. from 2A I can get the Stops "key" to find the next 2 bus arrival times by querying the STOP SCHEDULE endpoint.
-
-
 const streetQueryList = document.querySelector('.streets')
 const search = document.querySelector('.search')
 let table = document.querySelector('.table')
@@ -67,6 +55,7 @@ const stopListRender = (stopLocations) => {
     
     const stopScheduleRequest = await fetch(`https://api.winnipegtransit.com/v3/stops/${stopNum}/schedule.json?api-key=yXm1l1BHCfXG4tZHyorJ`)
     const stopScheduleData = await stopScheduleRequest.json()
+    
 
     table.insertAdjacentHTML('afterbegin', `
     <tr>
@@ -74,8 +63,8 @@ const stopListRender = (stopLocations) => {
             <td>${stopScheduleData['stop-schedule']['stop']["cross-street"].name}</td>
             <td>${stopScheduleData['stop-schedule']['stop']['direction']}</td>
             <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['route']['number']}</td>
-            <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][0]['times']['arrival']['estimated']}</td>
-            <td>${stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][1]['times']['arrival']['estimated']}</td>
+            <td>${new Date(stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][0]['times']['arrival']['estimated']).toLocaleTimeString('en-CA', {hour:'2-digit', minute: '2-digit',hour12: true})}</td>
+            <td>${new Date(stopScheduleData['stop-schedule']['route-schedules'][0]['scheduled-stops'][1]['times']['arrival']['estimated']).toLocaleTimeString('en-CA', {hour:'2-digit', minute: '2-digit',hour12: true})}</td>
 
           </tr>
     `)
